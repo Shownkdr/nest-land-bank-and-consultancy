@@ -1,0 +1,7 @@
+
+Quick deploy on GitHub Pages:
+1. Create GitHub repo (Public) and name it e.g., nest-land-bank-site.
+2. Upload index.html to the root of the repo (Add file → Upload files).
+3. Commit and push. Then go to Settings → Pages (or Pages in sidebar).
+4. Under "Build and deployment" choose "Deploy from a branch". Set Branch to main and Folder to / (root).
+5. Save — the site will be published after a minute. URL: https://<your-username>.github.io/<repo-name>/

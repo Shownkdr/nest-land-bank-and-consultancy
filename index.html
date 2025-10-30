@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Nest Land Bank & Realty — Land Bank, Loans & Consultancy (Kerala)</title>
+<meta name="description" content="Nest Land Bank & Realty — Land listing aggregation, legal facilitation, loan assistance (home, property, business, vehicle, personal) across Kerala.">
+<style>
+  :root{--accent:#0b5f4a;--muted:#666;--bg:#f6f7f8;--card:#fff;--maxw:1100px;}
+  *{box-sizing:border-box;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif}
+  body{margin:0;background:var(--bg);color:#111}
+  header{background:linear-gradient(90deg,#073c33,#0b6b53);color:#fff;padding:26px 16px}
+  .wrap{max-width:var(--maxw);margin:0 auto}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand h1{margin:0;font-size:20px}
+  nav{margin-left:auto}
+  nav a{color:rgba(255,255,255,0.95);text-decoration:none;margin-left:16px;font-weight:600}
+  .intro{padding:20px 16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent)}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;max-width:var(--maxw);margin:0 auto;padding:18px}
+  .card{background:var(--card);border-radius:10px;padding:16px;box-shadow:0 6px 18px rgba(10,10,10,0.06)}
+  .muted{color:var(--muted);font-size:14px}
+  h2{margin-top:0}
+  .loans .loan-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .loan{border-left:4px solid var(--accent);padding:12px;background:#fbfff9;border-radius:6px}
+  .contact{display:flex;flex-direction:column;gap:8px}
+  .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+  .listings-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  select,input[type="text"],input[type="number"],textarea{padding:8px;border-radius:6px;border:1px solid #ddd}
+  .listings{display:grid;gap:12px}
+  .listing{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:8px;border:1px solid #eee;background:#fff}
+  .small{font-size:13px;color:var(--muted)}
+  footer{padding:20px 16px;text-align:center;color:var(--muted)}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr} .loans .loan-list{grid-template-columns:1fr} nav{display:none} }
+  /* print-friendly single listing */
+  @media print {
+    header,nav,footer,.search-panel,.sidebar,.contact{display:none}
+    .print-listing{display:block;padding:0;margin:0}
+    .print-listing .row{display:flex;border-bottom:1px dashed #ccc;padding:8px 0}
+    .print-listing .row .label{width:320px;font-weight:700}
+  }
+  .print-listing{display:none;max-width:800px;margin:18px auto}
+  .pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eaf6f0;color:#054d3a;font-weight:700}
+  .search-result-empty{padding:18px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap brand">
+    <div style="width:52px;height:52px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;color:#0b6b53;font-weight:800">N</div>
+    <div>
+      <h1>Nest Land Bank & Realty</h1>
+      <div class="small">Real Estate Aggregation & Consultancy — Kerala</div>
+    </div>
+    <nav>
+      <a href="#listings">Listings</a>
+      <a href="#loans">Loans</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="intro wrap card" style="margin-top:16px">
+  <div style="display:flex;gap:16px;align-items:center;justify-content:space-between">
+    <div>
+      <h2>Land Bank • Loans • Legal Facilitation</h2>
+      <p class="muted">We aggregate land listings across Kerala, verify documents with our legal and revenue experts, and help buyers secure financing — Home loans, Property loans, Purchase & construction loans, Maintenance loans, Business loans, Personal & Vehicle loans.</p>
+      <div style="margin-top:10px">
+        <span class="pill">Call: +91-7907882524</span>
+        <span style="margin-left:10px" class="small">Email: shownkdrtvpm@gmail.com</span>
+      </div>
+    </div>
+
+    <div style="min-width:230px">
+      <div class="card small contact">
+        <strong>Quick actions</strong>
+        <a class="btn" href="#listings" style="text-align:center;display:block;margin-top:8px">Search Listings</a>
+        <a class="btn" style="background:#1d6fb8;text-align:center;display:block;margin-top:8px" href="#contact">Loan Enquiry</a>
+        <a class="btn" style="margin-top:8px;background:#333;color:#fff" id="openFormBtn">Submit Property</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grid" style="margin-top:18px">
+  <main class="card">
+    <section id="listings">
+      <h2>Listings</h2>
+      <p class="muted">Search our land bank. Use filters to quickly find properties by district, size and budget.</p>
+
+      <div class="search-panel" style="margin:10px 0;">
+        <div class="listings-controls">
+          <input id="filterDistrict" placeholder="District (e.g., Palakkad)">
+          <input id="filterMinA" type="number" placeholder="Min acres" step="0.01" min="0">
+          <input id="filterMaxA" type="number" placeholder="Max acres" step="0.01" min="0">
+          <input id="filterMinP" type="number" placeholder="Min price (lakhs)">
+          <input id="filterMaxP" type="number" placeholder="Max price (lakhs)">
+          <select id="filterType"><option value="">Any type</option><option>agri</option><option>residential</option><option>commercial</option><option>mixed</option></select>
+          <button class="btn" id="applyFilter">Apply</button>
+          <button class="btn" id="resetFilter" style="background:#777">Reset</button>
+        </div>
+      </div>
+
+      <div class="listings" id="listingsContainer"></div>
+      <div id="searchEmpty" class="search-result-empty" style="display:none">No listings match your criteria.</div>
+    </section>
+
+    <section id="loans" style="margin-top:18px">
+      <h2>Loans</h2>
+      <p class="muted">We help arrange loans with partner banks and financial institutions.</p>
+
+      <div class="loans">
+        <div class="loan-list">
+          <div class="loan"><strong>Home Loan</strong><div class="muted">Purchase/construct a house; balance transfers; tenure up to 30 years.</div></div>
+          <div class="loan"><strong>Property Loan</strong><div class="muted">Loan for land purchase for construction or investment.</div></div>
+          <div class="loan"><strong>Purchase / Construction Loan</strong><div class="muted">Buy or construct new houses/flats.</div></div>
+          <div class="loan"><strong>Maintenance / Repair Loan</strong><div class="muted">For repairs, renovation or extension.</div></div>
+          <div class="loan"><strong>Business & Personal Loans</strong><div class="muted">For businesses and personal needs.</div></div>
+          <div class="loan"><strong>Vehicle Loan</strong><div class="muted">Vehicle purchases with competitive terms.</div></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:14px">Loan rules at a glance</h3>
+      <ul class="muted">
+        <li>Eligibility: Individuals 18+ with steady income; income-tax payees (including agriculture participants).</li>
+        <li>Loan Tenure: Up to 30 years, must be repaid before borrower reaches 70 years. For multiple borrowers the youngest earning co-borrower's age is considered for max tenure.</li>
+        <li>We support reimbursement for own investments made within the 12 months preceding purchase/repair/construction.</li>
+      </ul>
+    </section>
+
+    <section id="services" style="margin-top:18px">
+      <h2>Services & Use Cases</h2>
+      <ol class="muted">
+        <li>Purchase a plot for building a house (Realty).</li>
+        <li>Purchase/Construct a new house/flat.</li>
+        <li>Purchase existing (old) house/flat or extend an existing house.</li>
+        <li>Repair or renovate an existing house/flat.</li>
+        <li>Takeover/balance transfer of home loans from other banks/HFCs/FIs.</li>
+        <li>Reimbursement of investments made from own resources during the preceding 12 months for purchases/repairs/construction.</li>
+        <li>We maintain a datasheet of buyer & seller leads — options: outright sale, long-term or short-term lease of land.</li>
+        <li>Office spaces for rent or sale.</li>
+        <li>Land for factory development and container stockyarding.</li>
+      </ol>
+    </section>
+
+    <section id="printDemo" style="margin-top:18px">
+      <h2>Print demo (single listing)</h2>
+      <p class="muted">Click a listing's <em>Print</em> button to get a print-ready, transposed single-listing form.</p>
+    </section>
+  </main>
+
+  <aside class="sidebar card" style="height:fit-content">
+    <h3>Contact & Submit</h3>
+    <p class="muted">List a property or enquire about loans.</p>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <a class="btn" href="#contact">Loan Enquiry</a>
+      <a class="btn" id="openFormBtn2" style="background:#333;color:#fff">Open Listing Form</a>
+    </div>
+
+    <hr style="margin:12px 0">
+    <div class="small">
+      <strong>Phone</strong><br>+91-7907882524<br><br>
+      <strong>Email</strong><br><a href="mailto:shownkdrtvpm@gmail.com">shownkdrtvpm@gmail.com</a>
+    </div>
+
+    <hr style="margin:12px 0">
+    <div class="small muted">
+      <strong>Quick tips</strong>
+      <ul>
+        <li>Use our public listing form — we will verify and publish.</li>
+        <li>We perform legal & revenue checks via our experts before listing.</li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<section id="contact" class="wrap card" style="margin:18px auto;max-width:var(--maxw)">
+  <h2>Contact & Apply</h2>
+  <p class="muted">Tell us your requirement and we'll reach out.</p>
+
+  <form id="contactForm" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <input name="name" placeholder="Your name" required>
+    <input name="phone" placeholder="Phone (10 digits)" required>
+    <input name="email" placeholder="Email">
+    <input name="district" placeholder="District">
+    <input name="purpose" placeholder="Purpose (e.g., Buy land / Loan enquiry)">
+    <textarea name="message" placeholder="Message or property details" style="grid-column:1/3;padding:8px;border-radius:6px;border:1px solid #ddd"></textarea>
+    <div style="grid-column:1/3;display:flex;gap:8px">
+      <button type="submit" class="btn">Send Enquiry</button>
+      <button type="button" id="openFormBtn3" class="btn" style="background:#777">Open Listing Form</button>
+    </div>
+  </form>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;justify-content:center;gap:12px;align-items:center;flex-direction:column">
+      <div class="small">© Nest Land Bank & Realty — Real Estate Aggregation & Consultancy</div>
+      <div class="small">Phone: +91-7907882524 • Email: <a href="mailto:shownkdrtvpm@gmail.com">shownkdrtvpm@gmail.com</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Print area -->
+<div id="printArea" class="print-listing card" aria-hidden="true"></div>
+
+<script>
+/* =========== Sample data (replace with live Sheet fetch) ============ */
+const sampleListings = [
+  {id:"PROP-000001", seller:"Rajesh", phone:"+91-9876543210", district:"Palakkad", taluk:"Ottapalam", locality:"Kunnamkulam", survey:"123/4", acres:1, cents:100, price:10, type:"agri", road:"Y", elec:"Y", water:"Y", encumbrance:"Unknown", notes:"1 acre near main road"},
+  {id:"PROP-000002", seller:"Suma", phone:"+91-9845123456", district:"Thiruvananthapuram", taluk:"Vanchiyur", locality:"Vanchiyur", survey:"98/6", acres:0.5, cents:50, price:8.5, type:"residential", road:"Y", elec:"Y", water:"Y", encumbrance:"Y", notes:"Ideal for small house"},
+  {id:"PROP-000003", seller:"Anil", phone:"+91-9444556677", district:"Palakkad", taluk:"Palakkad", locality:"Pattambi", survey:"200", acres:2, cents:200, price:45, type:"agri", road:"N", elec:"N", water:"N", encumbrance:"N", notes:"Large tract suitable for factory"}
+];
+
+const container = document.getElementById('listingsContainer');
+function renderListings(list){
+  container.innerHTML = "";
+  if(list.length===0){ document.getElementById('searchEmpty').style.display='block'; return; }
+  document.getElementById('searchEmpty').style.display='none';
+  list.forEach(l=>{
+    const el = document.createElement('div');
+    el.className='listing';
+    el.innerHTML = `
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div>
+            <div style="font-weight:700">${l.acres} acre(s) — ₹${l.price}L</div>
+            <div class="small">${l.locality}, ${l.taluk}, ${l.district} • ${l.type}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="small">Ref: ${l.id}</div>
+            <div style="margin-top:8px"><button class="btn" onclick="openPrint('${l.id}')">Print</button></div>
+          </div>
+        </div>
+        <div style="margin-top:8px" class="muted">${l.notes}</div>
+      </div>
+      <div style="width:200px;text-align:right">
+        <div class="small">Seller</div>
+        <div style="font-weight:700">${l.seller}</div>
+        <div class="small" style="margin-top:6px">Phone</div>
+        <div><a href="tel:${l.phone}">${l.phone}</a></div>
+      </div>
+    `;
+    container.appendChild(el);
+  });
+}
+renderListings(sampleListings);
+
+/* =========== Filtering ============ */
+function applyFilters(){
+  const d = document.getElementById('filterDistrict').value.trim().toLowerCase();
+  const minA = parseFloat(document.getElementById('filterMinA').value || "") || -Infinity;
+  const maxA = parseFloat(document.getElementById('filterMaxA').value || "") || Infinity;
+  const minP = parseFloat(document.getElementById('filterMinP').value || "") || -Infinity;
+  const maxP = parseFloat(document.getElementById('filterMaxP').value || "") || Infinity;
+  const type = document.getElementById('filterType').value;
+  const filtered = sampleListings.filter(l=>{
+    if(d && l.district.toLowerCase()!==d) return false;
+    if(l.acres < minA) return false;
+    if(l.acres > maxA) return false;
+    if(l.price < minP) return false;
+    if(l.price > maxP) return false;
+    if(type && l.type!==type) return false;
+    return true;
+  });
+  renderListings(filtered);
+}
+document.getElementById('applyFilter').addEventListener('click',applyFilters);
+document.getElementById('resetFilter').addEventListener('click',()=>{
+  ['filterDistrict','filterMinA','filterMaxA','filterMinP','filterMaxP','filterType'].forEach(id=>document.getElementById(id).value='');
+  renderListings(sampleListings);
+});
+
+/* =========== Contact form ============ */
+document.getElementById('contactForm').addEventListener('submit', (ev)=>{
+  ev.preventDefault();
+  alert('Thank you — enquiry submitted. We will contact you at ' + (ev.target.phone.value || 'your phone number'));
+  ev.target.reset();
+});
+
+/* =========== Listing form button (replace with actual Google Form URL) ============ */
+const formUrl = 'https://forms.gle/YOUR_GOOGLE_FORM_URL_PLACEHOLDER';
+['openFormBtn','openFormBtn2','openFormBtn3'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('click', ()=> {
+    if(formUrl.includes('YOUR_GOOGLE_FORM_URL_PLACEHOLDER')) {
+      alert('Please replace the formUrl variable in the script with your Google Form share link (copy from Forms → Send → Link).');
+      window.scrollTo(0,document.body.scrollHeight);
+    } else {
+      window.open(formUrl, '_blank');
+    }
+  });
+});
+
+/* =========== Print single listing (transposed) ============ */
+function openPrint(id){
+  const l = sampleListings.find(x=>x.id===id);
+  if(!l){ alert('Listing not found. If you connected a live sheet, ensure data loaded'); return; }
+  const area = document.getElementById('printArea');
+  area.innerHTML = `
+    <div style="padding:18px">
+      <h2 style="margin:0 0 8px 0">${l.acres} acre(s) — ₹${l.price} L</h2>
+      <div class="row"><div class="label">Property ID</div><div>${l.id}</div></div>
+      <div class="row"><div class="label">Seller</div><div>${l.seller}</div></div>
+      <div class="row"><div class="label">Phone</div><div>${l.phone}</div></div>
+      <div class="row"><div class="label">District</div><div>${l.district}</div></div>
+      <div class="row"><div class="label">Taluk / Area</div><div>${l.taluk}</div></div>
+      <div class="row"><div class="label">Locality</div><div>${l.locality}</div></div>
+      <div class="row"><div class="label">Survey No</div><div>${l.survey}</div></div>
+      <div class="row"><div class="label">Extent (acres / cents)</div><div>${l.acres} / ${l.cents}</div></div>
+      <div class="row"><div class="label">Land Type</div><div>${l.type}</div></div>
+      <div class="row"><div class="label">Road Access</div><div>${l.road}</div></div>
+      <div class="row"><div class="label">Electricity</div><div>${l.elec}</div></div>
+      <div class="row"><div class="label">Water</div><div>${l.water}</div></div>
+      <div class="row"><div class="label">Encumbrance</div><div>${l.encumbrance}</div></div>
+      <div style="margin-top:12px"><strong>Notes:</strong> ${l.notes}</div>
+      <div style="margin-top:18px" class="small">Printed from Nest Land Bank & Realty</div>
+    </div>
+  `;
+  area.style.display='block';
+  setTimeout(()=>{ window.print(); area.style.display='none'; }, 600);
+}
+
+/* =========== How to connect to Google Sheet (notes) ===========
+Options:
+A) Simple (no auth): In Google Sheets: File → Publish to the web → choose CSV for the Form Responses tab.
+   Use CSV export URL: https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/export?format=csv&gid=GID
+   Then fetch and parse CSV in JS, build objects like sampleListings and call renderListings(data);
+
+B) Secure: Use server-side code / Google Sheets API with proper credentials.
+
+CSV fetch pseudo-code (example to include):
+ fetch('https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/export?format=csv&gid=0')
+   .then(r => r.text()).then(csv => { /* parse csv rows to objects and renderListings(parsed) */ });
+
+Make sure form field order matches the CSV column order (or map them accordingly).
+======================================================================= */
+</script>
+</body>
+</html>
